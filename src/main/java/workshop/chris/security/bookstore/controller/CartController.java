@@ -24,6 +24,11 @@ public class CartController {
         return cartService.addToCart(userId, bookId);
     }
 
+    @PostMapping("/{userId}/books/{bookId}/remove")
+    public Cart removeFromCart(@PathVariable int userId, @PathVariable Long bookId) {
+        return cartService.removeFromCart(userId, bookId);
+    }
+
     @GetMapping("/{userId}")
     public Cart getCart(@PathVariable int userId) {
         return cartService.getCartByUserId(userId);

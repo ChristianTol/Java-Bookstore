@@ -7,5 +7,7 @@ import workshop.chris.security.bookstore.entity.Cart;
 public interface CartService {
     Cart addToCart(int userId, Long bookId);
 
+    Cart removeFromCart(int userId, Long bookId);
+
     Cart getCartByUserId(int userId);
 }

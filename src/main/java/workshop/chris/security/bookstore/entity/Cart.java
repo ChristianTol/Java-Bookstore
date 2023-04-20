@@ -68,6 +68,10 @@ public class Cart {
         this.id = id;
     }
 
+    public void removeCartItem(Long cartItemId) {
+        cartItems.removeIf(item -> item.getId().equals(cartItemId));
+    }
+
 //    public int getNumberOfItems() {
 //        return cartItems.stream()
 //                .mapToInt(CartItem::getQuantity)

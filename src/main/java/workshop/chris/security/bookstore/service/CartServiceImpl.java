@@ -37,6 +37,18 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    public Cart removeFromCart(int userId, Long cartItemId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Cart cart = user.getCart();
+        if (cart == null) {
+            throw new RuntimeException("User has no cart");
+        }
+        cart.removeCartItem(cartItemId);
+        return cartRepository.save(cart);
+    }
+
+    @Override
     public Cart getCartByUserId(int userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         Cart cart = user.getCart();
