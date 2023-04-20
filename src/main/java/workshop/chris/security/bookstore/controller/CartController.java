@@ -19,9 +19,11 @@ public class CartController {
     public CartController(CartService cartService) {
         this.cartService = cartService;
     }
-    @PostMapping("/{userId}/books/{bookId}")
-    public Cart addToCart(@PathVariable int userId, @PathVariable Long bookId) {
-        return cartService.addToCart(userId, bookId);
+
+    @PostMapping("/{userId}/books/{bookId}/add")
+    public String addToCart(@PathVariable int userId, @PathVariable Long bookId) {
+        cartService.addToCart(userId, bookId);
+        return "redirect:/{bookId}/details";
     }
 
     @PostMapping("/{userId}/books/{bookId}/remove")

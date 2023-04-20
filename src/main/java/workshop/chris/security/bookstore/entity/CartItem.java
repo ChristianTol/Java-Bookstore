@@ -35,6 +35,8 @@ public class CartItem {
     }
 
     public CartItem(Book book) {
+        this.book = book;
+        this.quantity = 1;
     }
 
     public Book getBook() {

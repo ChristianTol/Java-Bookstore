@@ -72,11 +72,11 @@ public class Cart {
         cartItems.removeIf(item -> item.getId().equals(cartItemId));
     }
 
-//    public int getNumberOfItems() {
-//        return cartItems.stream()
-//                .mapToInt(CartItem::getQuantity)
-//                .sum();
-//    }
+    public int getNumberOfItems() {
+        return cartItems.stream()
+                .mapToInt(CartItem::getQuantity)
+                .sum();
+    }
 
 //    public BigDecimal getTotalPrice() {
 //        return cartItems.stream()

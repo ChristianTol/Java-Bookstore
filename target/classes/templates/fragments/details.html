@@ -2,23 +2,25 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
 <style>
 
-  .rating {
-    display: inline-block;
-    font-size: 0;
-  }
-  .rating .star {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    background-image: url('https://uxwing.com/wp-content/themes/uxwing/download/arts-graphic-shapes/star-line-yellow-icon.png');
-    background-size: cover;
-    cursor: pointer;
-  }
-  .rating .star:hover,
-  .rating .star.active,
-  .rating .star.active ~ .star {
-    background-image: url('https://affaso.com/wp-content/uploads/2020/06/5-point-stars-png-star-icon-flat-11562958768wpf63hu4tq.png');
-  }
+    .rating {
+        display: inline-block;
+        font-size: 0;
+    }
+
+    .rating .star {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        background-image: url('https://uxwing.com/wp-content/themes/uxwing/download/arts-graphic-shapes/star-line-yellow-icon.png');
+        background-size: cover;
+        cursor: pointer;
+    }
+
+    .rating .star:hover,
+    .rating .star.active,
+    .rating .star.active ~ .star {
+        background-image: url('https://affaso.com/wp-content/uploads/2020/06/5-point-stars-png-star-icon-flat-11562958768wpf63hu4tq.png');
+    }
 
 
 </style>
@@ -39,60 +41,62 @@
 <!--  </div>-->
 <!--</div>-->
 <div th:fragment="book-details" class="container">
-  <div class="row m-5">
-    <div class="col-lg-4 col-md-6 mb-4">
-      <div class="card rounded shadow p-3 mb-5 rounded" style="background: linear-gradient(to bottom, #0E2340, #337ab7);">
-        <img class="p-3" width="100%" height="400px" style="background: black" th:src="@{${book.image}}" alt="Book Image">
-        <div class="card-body text-white" style="background: #0E2340">
-          <h5 class="card-title" th:text="${book.title}"></h5>
-          <p class="card-text" th:text="${book.author}"></p>
-          <p class="card-text" th:text="'€ ' + ${book.price}"></p>
+    <div class="row m-5">
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card rounded shadow p-3 mb-5 rounded"
+                 style="background: linear-gradient(to bottom, #0E2340, #337ab7);">
+                <img class="p-3" width="100%" height="400px" style="background: black" th:src="@{${book.image}}"
+                     alt="Book Image">
+                <div class="card-body text-white" style="background: #0E2340">
+                    <h5 class="card-title" th:text="${book.title}"></h5>
+                    <p class="card-text" th:text="${book.author}"></p>
+                    <p class="card-text" th:text="'€ ' + ${book.price}"></p>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-    <div class="col-lg-8 col-md-6 mb-4">
-      <h2>Add a Review</h2>
-      <form method="post" th:object="${review}">
-        <div class="mb-3">
-          <label for="title" class="form-label">Title</label>
-          <input type="text" class="form-control" id="title">
-        </div>
-        <div class="mb-3">
-          <label for="content" class="form-label">Comment</label>
-          <textarea class="form-control" id="content" rows="3" ></textarea>
-        </div>
-        <div class="rating">
-          <span class="star" data-value="2"></span>
-          <span class="star" data-value="4"></span>
-          <span class="star" data-value="6"></span>
-          <span class="star" data-value="8"></span>
-          <span class="star" data-value="10"></span>
-        </div>
-        <input type="hidden" name="rating" id="rating" value="0">
+        <div class="col-lg-8 col-md-6 mb-4">
+            <h2>Add a Review</h2>
+            <form method="post" th:object="${review}">
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="text" class="form-control" id="title">
+                </div>
+                <div class="mb-3">
+                    <label for="content" class="form-label">Comment</label>
+                    <textarea class="form-control" id="content" rows="3"></textarea>
+                </div>
+                <div class="rating">
+                    <span class="star" data-value="2"></span>
+                    <span class="star" data-value="4"></span>
+                    <span class="star" data-value="6"></span>
+                    <span class="star" data-value="8"></span>
+                    <span class="star" data-value="10"></span>
+                </div>
+                <input type="hidden" name="rating" id="rating" value="0">
 
-        <button type="submit" class="btn btn-primary">Add Review</button>
-      </form>
+                <button type="submit" class="btn btn-primary">Add Review</button>
+            </form>
+        </div>
+        <h2>Reviews</h2>
+        <!--      <ul class="list-group">-->
+        <!--        <li class="list-group-item" th:each="review : ${book.reviews}">-->
+        <!--          <h5 th:text="${review.title}"></h5>-->
+        <!--          <p th:text="${review.content}"></p>-->
+        <!--        </li>-->
+        <!--      </ul>-->
     </div>
-    <h2>Reviews</h2>
-    <!--      <ul class="list-group">-->
-    <!--        <li class="list-group-item" th:each="review : ${book.reviews}">-->
-    <!--          <h5 th:text="${review.title}"></h5>-->
-    <!--          <p th:text="${review.content}"></p>-->
-    <!--        </li>-->
-    <!--      </ul>-->
-  </div>
 </div>
 <script>
-  const rating = document.querySelector('#rating');
-  const stars = document.querySelectorAll('.rating .star');
-  stars.forEach(star => {
-    star.addEventListener('click', () => {
-      const value = star.getAttribute('data-value');
-      rating.value = value;
-      stars.forEach(s => s.classList.remove('active'));
-      star.classList.add('active');
+    const rating = document.querySelector('#rating');
+    const stars = document.querySelectorAll('.rating .star');
+    stars.forEach(star => {
+        star.addEventListener('click', () => {
+            const value = star.getAttribute('data-value');
+            rating.value = value;
+            stars.forEach(s => s.classList.remove('active'));
+            star.classList.add('active');
+        });
     });
-  });
 </script>
 
 </body>

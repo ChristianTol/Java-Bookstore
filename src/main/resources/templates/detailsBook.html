@@ -118,7 +118,7 @@
                             th:disabled="${addedBooks[book.id] == true}"><i class="fa-solid fa-heart"></i> Add
                     </button>
                 </form>
-                <form method="post" th:action="@{'/' + ${user.id} + '/books/' + ${book.id} + '/add'}">
+                <form method="post" th:action="@{/cart/{userId}/books/{bookId}/add (userId=${user.id}, bookId=${book.id})}">
                     <input type="hidden" name="id" th:value="${book.id}">
                     <button type="submit" class="btn text-white mx-2"
                             style="background: linear-gradient(45deg, #28a745, #155724);"><i
