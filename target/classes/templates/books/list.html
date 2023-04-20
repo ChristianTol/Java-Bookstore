@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Books</title>
+  <link rel="stylesheet" th:href="@{https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css}">
+</head>
+<body>
+<div class="container">
+  <h1>Books</h1>
+  <hr>
+  <table class="table">
+    <thead>
+    <tr>
+      <th>Title</th>
+      <th>Author</th>
+      <th>Price</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="bookList : ${bookList}">
+      <td th:text="${bookList.book.title}"></td>
+      <td th:text="${bookList.book.author}"></td>
+      <td th:text="${bookList.book.price}"></td>
+      <td>
+        <form method="post" th:action="@{/{userId}/books/{bookId} (userId=${user.id}, bookId=${bookList.book.id}) }">
+          <input type="hidden" name="_method" value="DELETE" />
+          <button type="submit" class="btn btn-danger">Remove from my list</button>
+        </form>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <table class="table">
+    <thead>
+    <tr>
+      <th>Title</th>
+      <th>Author</th>
+      <th>Price</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="book : ${books}">
+      <td th:text="${book.title}"></td>
+      <td th:text="${book.author}"></td>
+      <td th:text="${book.price}"></td>
+      <td>
+        <form method="post" th:action="@{'/' + ${user.id} + '/books'}">
+          <input type="hidden" name="id" th:value="${book.id}">
+          <button type="submit" class="btn btn-primary" th:classappend="${addedBooks[book.id] == true ? 'btn-disabled btn-secondary' : ''}" th:disabled="${addedBooks[book.id] == true}">Add to list</button>
+        </form>
+        <form method="post" th:action="@{/{bookId}/delete (bookId=${book.id}) }">
+          <input type="hidden" name="_method" value="DELETE" />
+          <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+<!--  <form method="post" th:action="@{/books}">-->
+<!--    <div class="form-group">-->
+<!--      <label for="title">Title:</label>-->
+<!--      <input type="text" id="title" name="title" class="form-control" required>-->
+<!--    </div>-->
+<!--    <div class="form-group">-->
+<!--      <label for="author">Author:</label>-->
+<!--      <input type="text" id="author" name="author" class="form-control" required>-->
+<!--    </div>-->
+<!--    <div class="form-group">-->
+<!--      <label for="price">Price:</label>-->
+<!--      <input type="text" id="price" name="price" class="form-control" required>-->
+<!--    </div>-->
+<!--    <button type="submit" class="btn btn-primary">Add Book</button>-->
+<!--  </form>-->
+</div>
+</body>
+</html>

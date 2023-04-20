@@ -1,0 +1,15 @@
+.rating {
+    display: inline-block;
+    font-size: 0;
+}
+.rating .star {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-image: url('https://affaso.com/wp-content/uploads/2020/06/5-point-stars-png-star-icon-flat-11562958768wpf63hu4tq.png');
+    background-size: cover;
+    cursor: pointer;
+}
+.rating .star.active {
+    background-image: url('https://affaso.com/wp-content/uploads/2020/06/5-point-stars-png-star-icon-flat-11562958768wpf63hu4tq.png');
+}

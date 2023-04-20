@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Error><Code>PermanentRedirect</Code><Message>The bucket you are attempting to access must be addressed using the specified endpoint. Please send all future requests to this endpoint.</Message><Endpoint>uifaces.s3.amazonaws.com</Endpoint><Bucket>uifaces</Bucket><RequestId>0A0RC3783D3B195Q</RequestId><HostId>yDzi+DGWbA2zcvUhoOtL8kmZSvZR26uFMZnPn5i8aMtFb6+DKhx53WmdupCpVNoAzn2XbDwLTu8=</HostId></Error>

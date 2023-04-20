@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en" xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <title>Book Store</title>
+  <script src="https://kit.fontawesome.com/b2e08fd350.js" crossorigin="anonymous"></script>
+  <style>
+
+    .rating {
+      display: flex;
+      flex-direction: row-reverse;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .rating .star {
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      background-image: url('https://uxwing.com/wp-content/themes/uxwing/download/arts-graphic-shapes/star-line-yellow-icon.png');
+      background-size: cover;
+      cursor: pointer;
+      margin: 2px;
+    }
+
+    .rating-static .star-static {
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      background-image: url('https://uxwing.com/wp-content/themes/uxwing/download/arts-graphic-shapes/star-line-yellow-icon.png');
+      background-size: cover;
+      cursor: pointer;
+      margin: 2px;
+    }
+
+    .rating-static .star-static.filled {
+      background-image: url('https://img.icons8.com/color/512/filled-star--v1.png');
+        width: 35px;
+        height: 35px;
+        padding: 0;
+        margin: 0;
+    }
+
+    .positive {
+      color: green;
+    }
+
+    .normal {
+      color: orange;
+    }
+
+    .negative {
+      color: red;
+    }
+
+    .rating .star.active, .rating .star:hover, .rating .star.active ~ .star, .rating .star:hover ~ .star {
+      background-image: url('https://img.icons8.com/color/512/filled-star--v1.png');
+      width: 35px;
+      height: 35px;
+      padding: 0;
+      margin: 0;
+    }
+  </style>
+</head>
+<!--  <link rel="stylesheet" href="../static/css/details.css" />-->
+<body>
+
+<div th:replace="fragments/navigation :: navigation"></div>
+<!--<div th:replace="fragments/details :: book-details"></div>-->
+
+<div class="container">
+  <div class="row m-5">
+    <div class="col-lg-4 col-md-6 mb-4">
+      <div class="card rounded shadow p-3 mb-5 rounded" style="background: linear-gradient(to bottom, #0E2340, #337ab7);">
+        <img class="p-3" width="100%" height="400px" style="background: black" th:src="@{${book.image}}" alt="Book Image">
+        <div class="card-body text-white" style="background: #0E2340">
+          <h5 class="card-title" th:text="${book.title}"></h5>
+          <p class="card-text" th:text="${book.author}"></p>
+          <p class="card-text" th:text="'€ ' + ${book.price}"></p>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-8 col-md-6 mb-4">
+      <h2>Add a Review</h2>
+      <form method="post" th:action="@{/reviews/{bookId}/save (bookId=${book.id})}">
+        <div class="mb-3">
+          <label for="title" class="form-label">Title</label>
+          <input type="text" class="form-control" name="title" id="title" required>
+        </div>
+        <div class="mb-3">
+          <label for="comment" class="form-label">Comment</label>
+          <textarea class="form-control" name="comment" id="comment" rows="3" required></textarea>
+        </div>
+        <div class="mb-4">
+          <label for="rating" class="form-label">Rating</label>
+          <div class="rating">
+            <span class="star" data-rating="5"></span>
+            <span class="star" data-rating="4"></span>
+            <span class="star" data-rating="3"></span>
+            <span class="star" data-rating="2"></span>
+            <span class="star" data-rating="1"></span>
+            <input type="hidden" name="rating" id="rating" value="1" required>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Rate this book</button>
+      </form>
+      <div class="d-flex py-5 my-5 px-0 m-0 justify-content-end">
+        <form method="post" th:action="@{'/' + ${user.id} + '/books/' + ${book.id} + '/add'}">
+          <input type="hidden" name="id" th:value="${book.id}">
+          <button type="submit" class="btn text-white mx-2" style="background: linear-gradient(45deg, #2196f3, #1976d2);" th:classappend="${addedBooks[book.id] == true ? 'btn-disabled btn-secondary' : ''}" th:disabled="${addedBooks[book.id] == true}"><i class="fa-solid fa-heart"></i> Add</button>
+        </form>
+        <form method="post" th:action="@{'/' + ${user.id} + '/books/' + ${book.id} + '/add'}">
+          <input type="hidden" name="id" th:value="${book.id}">
+          <button type="submit" class="btn text-white mx-2" style="background: linear-gradient(45deg, #28a745, #155724);"><i class="fa-solid fa-cart-shopping"></i> Add to Cart</button>
+        </form>
+      </div>
+    </div>
+    <h2>Reviews</h2>
+    <div>
+      <h6 th:if="${reviews.size() > 0}" th:text="'Based on ' + ${reviews.size()} + ${reviews.size() > 1 ? ' reviews' : ' review'}"
+          style="color: gray;"
+      ></h6>
+    </div>
+    <h6 th:if="${positivePercentage > 50}" th:text="'The reviews for this book are generally positive (' + ${positivePercentage} + '% / ' + ${negativePercentage} + '%)'"
+      th:class="positive"
+    ></h6>
+    <h6 th:if="${positivePercentage == 50}" th:text="'The reviews for this book are divided (' + ${positivePercentage} + '% / ' + ${negativePercentage} + '%)'"
+      th:class="normal"
+    ></h6>
+    <h6 th:if="${positivePercentage < 50 and reviews.size() > 0}" th:text="'The reviews for this book are generally negative (' + ${positivePercentage} + '% / ' + ${negativePercentage} + '%)'"
+        th:class="negative"
+    ></h6>
+    <ul class="list-group mt-4">
+      <li class="mb-5" style="list-style: none; border-color: #0E2340" th:each="review : ${reviews}" data-review-id="${review.id}">
+        <div class="d-flex justify-content-between">
+          <div class="d-flex align-items-center">
+            <div class="rating-static" th:each="i: ${#numbers.sequence(1, 5)}">
+                <span class="star-static filled" th:if="${review.rating >= i}"></span>
+                <span class="star-static" th:if="${review.rating < i}"></span>
+            </div>
+            <h5 class="mx-2 m-0" th:text="${review.title}"></h5>
+            <img th:if="${review.rating >= 3}" class="mb-2" src="https://hotidioms.files.wordpress.com/2018/01/green-thumb.png" width="30px" height="30px" alt=""/>
+            <img th:if="${review.rating < 3}" class="mt-2" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqo_6VextATR24k6lDznWZVZMGpS7eOiRVrNK2fy_bjOU_tSGXbrGvuzqvYRu1qq__yTM&usqp=CAU" width="30px" height="30px" alt=""/>
+          </div>
+          <div class="d-flex align-items-center text-center">
+            <p class="m-0 text-center" style="color: lightgray" th:text="'Written by: ' + ${review.user.firstName} + ' ' + ${review.user.lastName}"></p>
+          </div>
+        </div>
+        <hr class="m-2">
+        <div class="mt-4 d-flex justify-content-between">
+          <p class="mx-2" style="max-width: 75%; word-wrap: break-word; white-space: pre-wrap" th:text="${review.comment}"></p>
+          <div th:if="${review.user.id == user.id}" class="d-flex align-items-center justify-content-center">
+            <button type="button" style="color: #ffc107" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#editModal">
+                <i class="fa-solid fa-edit"></i>
+            </button>
+            <form th:action="@{/reviews/{bookId}/review/{reviewId}/delete (bookId=${book.id}, reviewId=${review.id})}" method="post">
+              <input type="hidden" name="_method" value="DELETE"/>
+              <button type="submit" style="color: #f44336; text-decoration: none;" class="btn btn-link"><i class="fa-solid fa-trash"></i></button>
+            </form>
+          </div>
+        </div>
+      </li>
+      <li class="list-group" th:if="${reviews.size() == 0}">
+        <hr>
+        <p style="color: gray" class="mx-2">Be the first to review this book!</p>
+      </li>
+    </ul>
+  </div>
+  <!-- Edit Review Modal -->
+  <div class="modal fade" th:each="review : ${reviews}" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editModalLabel">Edit Review</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form th:object="${review}" th:method="post" th:action="@{/reviews/{bookId}/save (bookId=${book.id})}" id="editForm">
+            <div class="mb-3">
+              <label for="editTitle" class="col-form-label">Title</label>
+              <input type="text" class="form-control" id="editTitle" th:value="${review.title}" required>
+            </div>
+            <div class="mb-3">
+              <label for="editComment" class="col-form-label">Comment</label>
+              <textarea class="form-control" id="editComment" th:utext="${review.comment}" required></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="editRating" class="col-form-label">Rating</label>
+              <input type="number" class="form-control" id="editRating" th:value="${review.rating}" min="1" max="5" required>
+            </div>
+            <input type="hidden" id="editReviewId" name="id" th:value="${review.id}">
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary" form="editForm">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+<script>
+  const stars = document.querySelectorAll('.rating .star');
+  const input = document.querySelector('#rating');
+
+  stars.forEach(star => {
+    star.addEventListener('click', () => {
+      const rating = star.getAttribute('data-rating');
+      console.log(rating)
+      stars.forEach(star => {
+        if (star.getAttribute('data-rating') <= rating) {
+          star.classList.add('active');
+          input.value = rating;
+        } else {
+          star.classList.remove('active');
+        }
+      });
+    });
+  });
+
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</body>
+</html>
